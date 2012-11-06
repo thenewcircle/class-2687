@@ -1,0 +1,5 @@
+= Android Bootcamp =
+
+== Link ==
+
+* http://software.intel.com/en-us/articles/intel-hardware-accelerated-execution-manager/[Intel HAXM]
