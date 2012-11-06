@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.marakana.android.yamba.clientlib.YambaClient;
+import com.marakana.android.yamba.clientlib.YambaClientException;
+
 public class StatusActivity extends Activity {
 	private Button buttonGo;
 	private EditText input;
@@ -25,15 +28,15 @@ public class StatusActivity extends Activity {
 		count = (TextView) findViewById(R.id.count);
 		count.setText("140");
 		input = (EditText) findViewById(R.id.input);
-		input.addTextChangedListener( new TextWatcher() {
+		input.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void afterTextChanged(Editable s) {
-				count.setText( Integer.toString( 140 - s.length() ) );
+				count.setText(Integer.toString(140 - s.length()));
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {				
+					int after) {
 			}
 
 			@Override
@@ -41,14 +44,27 @@ public class StatusActivity extends Activity {
 					int count) {
 			}
 		});
-		
+
 		buttonGo = (Button) findViewById(R.id.button_go);
 		buttonGo.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Log.d("Yamba", "onClicked with input: "
-						+ input.getText().toString());
+				final String status = input.getText().toString();
+				Log.d("Yamba", "onClicked with input: " + status);
+				// Post to the cloud
+				final YambaClient client = new YambaClient("student",
+						"password");
+
+				new Thread() {
+					public void run() {
+						try {
+							client.postStatus(status);
+						} catch (YambaClientException e) {
+							e.printStackTrace();
+						}
+					}
+				}.start();
 			}
 		});
 	}
