@@ -6,5 +6,8 @@
     <string name="title_activity_status">Update Status</string>
     <string name="text_go">Go!</string>
     <string name="status_hint">What\'s happening??</string>
+    <string name="update_status">Update Status</string>
+    <string name="update">Update</string>
+    <string name="refresh">Refresh</string>
 
 </resources>
