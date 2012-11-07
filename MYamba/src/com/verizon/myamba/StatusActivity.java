@@ -20,6 +20,7 @@ import com.marakana.android.yamba.clientlib.YambaClient;
 import com.marakana.android.yamba.clientlib.YambaClientException;
 
 public class StatusActivity extends Activity {
+	private static final String TAG = "StatusActivity";
 	private Button buttonGo;
 	private EditText input;
 	private TextView count;
@@ -28,6 +29,9 @@ public class StatusActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Log.d(TAG, "onCreate with bundle: "+savedInstanceState);
+		
 		client = new YambaClient("student", "password");
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -22,7 +22,8 @@
         </activity>
         <activity
             android:name=".StatusActivity"
-            android:label="@string/title_activity_status" >
+            android:label="@string/title_activity_status" 
+            android:launchMode="singleInstance">
         </activity>
         <service android:name=".RefreshService"></service>
     </application>
