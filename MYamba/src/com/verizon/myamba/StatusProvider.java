@@ -58,7 +58,9 @@ public class StatusProvider extends ContentProvider {
 
 		// Return value
 		if (id > 0) {
-			return ContentUris.withAppendedId(uri, id);
+			Uri ret = ContentUris.withAppendedId(uri, id);
+			getContext().getContentResolver().notifyChange(ret, null);
+			return ret;
 		} else {
 			return null;
 		}
@@ -67,28 +69,29 @@ public class StatusProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		
+
 		db = dbHelper.getReadableDatabase();
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-		qb.setTables( StatusContract.PATH );
-		
+		qb.setTables(StatusContract.PATH);
+
 		// Figure out type of query and possibly id or the record
-		switch( uriMatcher.match(uri) ) {
+		switch (uriMatcher.match(uri)) {
 		case STATUS_DIR:
 			// Do nothing
 			break;
 		case STATUS_ITEM:
 			long id = ContentUris.parseId(uri);
-			qb.appendWhere( StatusContract.Columns._ID + "=" +id );
+			qb.appendWhere(StatusContract.Columns._ID + "=" + id);
 		default:
 			throw new IllegalArgumentException("Unsupported uri: " + uri);
 		}
-		
+
 		// Do the query
-		Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-		
-		cursor.setNotificationUri( getContext().getContentResolver(), uri);
-		
+		Cursor cursor = qb.query(db, projection, selection, selectionArgs,
+				null, null, sortOrder);
+
+		cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
 		return cursor;
 	}
 
