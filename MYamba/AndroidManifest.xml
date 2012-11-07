@@ -26,6 +26,8 @@
             android:launchMode="singleInstance">
         </activity>
         <service android:name=".RefreshService"></service>
+        <provider android:name=".StatusProvider"
+            android:authorities="com.verizon.yamba.provider"></provider>
     </application>
 
 </manifest>
