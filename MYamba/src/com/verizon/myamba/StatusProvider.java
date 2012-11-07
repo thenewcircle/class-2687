@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 public class StatusProvider extends ContentProvider {
@@ -66,8 +67,29 @@ public class StatusProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		db = dbHelper.getReadableDatabase();
+		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+		qb.setTables( StatusContract.PATH );
+		
+		// Figure out type of query and possibly id or the record
+		switch( uriMatcher.match(uri) ) {
+		case STATUS_DIR:
+			// Do nothing
+			break;
+		case STATUS_ITEM:
+			long id = ContentUris.parseId(uri);
+			qb.appendWhere( StatusContract.Columns._ID + "=" +id );
+		default:
+			throw new IllegalArgumentException("Unsupported uri: " + uri);
+		}
+		
+		// Do the query
+		Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+		
+		cursor.setNotificationUri( getContext().getContentResolver(), uri);
+		
+		return cursor;
 	}
 
 	@Override
