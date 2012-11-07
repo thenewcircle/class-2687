@@ -66,7 +66,7 @@ public class MainActivity extends ListActivity implements
 			startActivity(statucActivityIntent);
 			return true;
 		case R.id.menu_refresh:
-			startService(new Intent(this, RefreshService.class));
+			startService(new Intent("com.verizon.yamba.action.REFRESH"));
 			return true;
 		default:
 			return false;
