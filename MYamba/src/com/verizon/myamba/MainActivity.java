@@ -7,16 +7,21 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.ViewBinder;
+import android.widget.TextView;
 
 public class MainActivity extends ListActivity implements
 		LoaderCallbacks<Cursor> {
 	private static final String[] FROM = { StatusContract.Columns.USER,
-			StatusContract.Columns.MESSAGE };
-	private static final int[] TO = { android.R.id.text1, android.R.id.text2 };
+			StatusContract.Columns.MESSAGE, StatusContract.Columns.CREATED_AT };
+	private static final int[] TO = { R.id.text_user, R.id.text_message,
+			R.id.text_created_at };
 	private static final int LOADER_ID = 47;
 	private SimpleCursorAdapter adapter;
 
@@ -24,13 +29,28 @@ public class MainActivity extends ListActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		adapter = new SimpleCursorAdapter(this,
-				android.R.layout.simple_list_item_2, null, FROM, TO,
+		adapter = new SimpleCursorAdapter(this, R.layout.row, null, FROM, TO,
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		adapter.setViewBinder(VIEW_BINDER);
 		getListView().setAdapter(adapter);
-		
+
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 	}
+	
+	private static ViewBinder VIEW_BINDER = new ViewBinder() {
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if( view.getId() != R.id.text_created_at ) return false;
+			
+			long timestamp = cursor.getLong(columnIndex);
+			CharSequence relTime = DateUtils.getRelativeTimeSpanString(timestamp);
+			((TextView)view).setText( relTime );
+			
+			return true;
+		}
+		
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,7 +77,8 @@ public class MainActivity extends ListActivity implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		if(id != LOADER_ID) return null;
+		if (id != LOADER_ID)
+			return null;
 		return new CursorLoader(this, StatusContract.CONTENT_URI, null, null,
 				null, StatusContract.DEFAULT_SORT_ORDER);
 	}
